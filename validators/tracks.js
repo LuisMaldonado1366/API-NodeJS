@@ -1,4 +1,5 @@
 const { check } = require("express-validator");
+const validateResults = require("../utils/handleValidator");
 
 const validatorCreateItem = [
   check("name").exists().notEmpty(),
@@ -12,9 +13,16 @@ const validatorCreateItem = [
   check("duration.start").exists().notEmpty(),
   check("duration.end").exists().notEmpty(),
   check("mediaId").exists().notEmpty().isMongoId(),
-  (request, response, next) => {
-
-  }
+  (req, res, next) => {
+    return validateResults(req, res, next);
+  },
 ];
 
-module.exports = { validatorCreateItem };
+const validatorReadItem = [
+  check("id").exists().notEmpty().isMongoId(),
+  (req, res, next) => {
+    return validateResults(req, res, next);
+  },
+];
+
+module.exports = { validatorCreateItem, validatorReadItem };
