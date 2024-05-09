@@ -1,4 +1,4 @@
-const fileSystem = require("fs");
+const fs = require("fs");
 const { response } = require("express");
 const { storageModel } = require("../models");
 const { handleHttpError } = require("../utils/handleError");
@@ -23,7 +23,6 @@ const getItems = async (req, res) => {
  */
 const createItem = async (req, res) => {
   const { body, file } = req;
-  console.log(file);
   const fileData = {
     filename: file.filename,
     url: `${PUBLIC_URL}/${file.filename}`,
@@ -39,8 +38,9 @@ const createItem = async (req, res) => {
  */
 const readItem = async (req, res) => {
   try {
-    const {id} = matchedData(req);
+    const { id } = matchedData(req);
     const data = await storageModel.findById({ _id: id });
+    console.log(data);
     res.send({ data });
   } catch (err) {
     handleHttpError(res, `ERROR_READING_ITEM: ${err}`);
@@ -61,9 +61,18 @@ const updateItem = async (req, res) => {};
  */
 const deleteItem = async (req, res) => {
   try {
-    const {id} = matchedData(req);
-    const data = await storageModel.findById({ _id: id });
-    fileSystem.unlinkSync();
+    const { id } = matchedData(req);
+    const dataFile = await storageModel.findById({ _id: id });
+    const {filename} = dataFile;
+    console.log(dataFile);
+    const filePath = `${MEDIA_PATH}/${filename}`;
+    console.log(filePath);
+    // fs.unlinkSync(filePath);
+
+    const data = {
+      filePath,
+      deleted: 1
+    }
     res.send({ data });
   } catch (err) {
     handleHttpError(res, `ERROR_READING_ITEM: ${err}`);

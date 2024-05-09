@@ -6,7 +6,7 @@ const StoreScheme = new mongoose.Schema(
     url: {
       type: String,
     },
-    fileName: {
+    filename: {
       type: String,
     },
   },
