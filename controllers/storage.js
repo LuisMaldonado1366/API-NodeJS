@@ -1,11 +1,10 @@
 const fs = require("fs");
-const { response } = require("express");
 const { storageModel } = require("../models");
 const { handleHttpError } = require("../utils/handleError");
 const { matchedData } = require("express-validator");
 
 const PUBLIC_URL = process.env.PUBLIC_URL;
-const MEDIA_PATH = `$(__dirname__)/../storage`;
+const MEDIA_PATH = `${__dirname}/../storage`;
 
 const getItems = async (req, res) => {
   try {
@@ -22,13 +21,17 @@ const getItems = async (req, res) => {
  * @param {*} res
  */
 const createItem = async (req, res) => {
-  const { body, file } = req;
-  const fileData = {
-    filename: file.filename,
-    url: `${PUBLIC_URL}/${file.filename}`,
-  };
-  const data = await storageModel.create(fileData);
-  res.send({ data });
+  try {
+    const { body, file } = req;
+    const fileData = {
+      filename: file.filename,
+      url: `${PUBLIC_URL}/${file.filename}`,
+    };
+    const data = await storageModel.create(fileData);
+    res.send({ data });
+  } catch (err) {
+    handleHttpError(res, `ERROR_READING_ITEM: ${err}`);
+  }
 };
 
 /**
@@ -40,19 +43,11 @@ const readItem = async (req, res) => {
   try {
     const { id } = matchedData(req);
     const data = await storageModel.findById({ _id: id });
-    console.log(data);
     res.send({ data });
   } catch (err) {
     handleHttpError(res, `ERROR_READING_ITEM: ${err}`);
   }
 };
-
-/**
- * Update an item.
- * @param {*} req
- * @param {*} res
- */
-const updateItem = async (req, res) => {};
 
 /**
  * Delete an item.
@@ -63,20 +58,25 @@ const deleteItem = async (req, res) => {
   try {
     const { id } = matchedData(req);
     const dataFile = await storageModel.findById({ _id: id });
-    const {filename} = dataFile;
-    console.log(dataFile);
+    const { filename } = dataFile;
     const filePath = `${MEDIA_PATH}/${filename}`;
-    console.log(filePath);
+
+    // // To delete from database and filesystem.
+    // await storageModel.deleteOne({_id: id});
     // fs.unlinkSync(filePath);
+
+    // To make soft-delete
+    await storageModel.delete({ _id: id });
 
     const data = {
       filePath,
-      deleted: 1
-    }
+      deleted: 1,
+    };
+
     res.send({ data });
   } catch (err) {
     handleHttpError(res, `ERROR_READING_ITEM: ${err}`);
   }
 };
 
-module.exports = { getItems, readItem, createItem, updateItem, deleteItem };
+module.exports = { getItems, readItem, createItem, deleteItem };

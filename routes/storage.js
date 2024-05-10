@@ -6,7 +6,6 @@ const {
   getItems,
   createItem,
   readItem,
-  updateItem,
   deleteItem,
 } = require("../controllers/storage");
 //todo   http://localhost:{PORT}/storage GET, POST, DELETE  PUT.
@@ -27,13 +26,8 @@ router.post("/", uploadMiddleware.single("uploadFile"), createItem);
 router.get("/:id", validatorReadItem, readItem);
 
 /**
- * Update an item.
- */
-router.put("/:id", validatorReadItem, updateItem);
-
-/**
  * Delete an item.
  */
-router.delete(":/id", validatorReadItem, deleteItem);
+router.delete("/:id", validatorReadItem, deleteItem);
 
 module.exports = router;
