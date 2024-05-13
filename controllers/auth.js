@@ -1,6 +1,7 @@
 const { tokenSign, verifyToken } = require("../utils/handleJwt");
 const { encrypt, compare } = require("../utils/handlePassword");
 const { matchedData } = require("express-validator");
+const { handleHttpError } = require("../utils/handleError");
 const { usersModel } = require("../models");
 
 /**
@@ -25,7 +26,7 @@ const registerCtrl = async (request, response) => {
 
     response.send({ data });
   } catch (err) {
-    handleHttpError(res, `ERROR_REGISTER_USER: ${err}`);
+    handleHttpError(response, `ERROR_REGISTER_USER: ${err}`);
   }
 };
 
@@ -38,28 +39,31 @@ const loginCtrl = async (request, response) => {
   try {
     request = matchedData(request);
 
-    const user = await usersModel.findOne({ email: request.email });
+    const user = await usersModel
+      .findOne({ email: request.email })
+      .select("password name role email");
 
     if (!user) {
-        handleHttpError(res, `USER_NOT_EXIST: ${err}`, 404);
-        return
+      handleHttpError(response, `USER_NOT_EXIST`, 404);
+      return;
     }
 
-    const hashPassword = user.password;
+    const hashPassword = user.get("password");
     const checkPassword = await compare(request.password, hashPassword);
 
     if (!checkPassword) {
-        handleHttpError(res, `PASSWORD_INVALID: ${err}`, 401);
+      handleHttpError(response, `INVALID_PASSWORD`, 401);
     }
-    
+
+    user.set("password", undefined, { strict: false });
     const data = {
-      token: await tokenSign(dataUser),
-      user: dataUser,
+      token: await tokenSign(user),
+      user,
     };
 
     response.send({ data });
   } catch (err) {
-    handleHttpError(res, `ERROR_LOGIN_USER: ${err}`);
+    handleHttpError(response, `ERROR_LOGIN_USER: ${err}`);
   }
 };
 

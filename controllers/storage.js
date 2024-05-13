@@ -30,7 +30,7 @@ const createItem = async (req, res) => {
     const data = await storageModel.create(fileData);
     res.send({ data });
   } catch (err) {
-    handleHttpError(res, `ERROR_READING_ITEM: ${err}`);
+    handleHttpError(res, `ERROR_CREATING_ITEM: ${err}`);
   }
 };
 
