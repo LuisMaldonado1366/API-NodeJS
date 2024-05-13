@@ -26,7 +26,7 @@ router.get("/", authMiddleware, getItems);
 router.post(
   "/",
   authMiddleware,
-  checkRole(["admin"]),
+  checkRole(["admin", "user"]),
   validatorCreateItem,
   createItem
 );
@@ -42,7 +42,7 @@ router.get("/:id", authMiddleware, validatorReadItem, readItem);
 router.put(
   "/:id",
   authMiddleware,
-  checkRole,
+  checkRole(["admin", "user"]),
   validatorReadItem,
   validatorCreateItem,
   updateItem
@@ -51,6 +51,6 @@ router.put(
 /**
  * Deletes an item.
  */
-router.delete("/:id", authMiddleware, checkRole, validatorReadItem, deleteItem);
+router.delete("/:id", authMiddleware, checkRole(["admin"]), validatorReadItem, deleteItem);
 
 module.exports = router;

@@ -2,9 +2,11 @@ const { matchedData } = require("express-validator");
 const { tracksModel } = require("../models");
 const { handleHttpError } = require("../utils/handleError");
 
+const ENGINE_DB = process.env.ENGINE_DB;
+
 const getItems = async (req, res) => {
   try {
-    const data = await tracksModel.find({});
+    const data = (ENGINE_DB === "nosql") ? await tracksModel.find({}) : await tracksModel.findAll({});;
     const user = req.user;    
     res.send({ data, user });
   } catch (err) {

@@ -7,9 +7,9 @@ async function dbConnectNoSQL() {
     mongoose.set('strictQuery', false);
     await mongoose.connect(DB_URI);
     
-    console.log("***** SUCCESS CONNECTING TO DATABASE *****");
+    console.log("***** SUCCESS CONNECTING TO NOSQL DATABASE *****");
   } catch (error) {
-    console.log(`***** ERROR CONNECTING TO DATABASE: ${error} *****`);
+    console.log(`***** ERROR CONNECTING TO NOSQL DATABASE: ${error} *****`);
     process.exit();
   }
 };
