@@ -6,7 +6,7 @@ const ENGINE_DB = process.env.ENGINE_DB;
 
 const getItems = async (req, res) => {
   try {
-    const data = (ENGINE_DB === "nosql") ? await tracksModel.find({}) : await tracksModel.findAll({});;
+    const data = await tracksModel.findAllData({});
     const user = req.user;    
     res.send({ data, user });
   } catch (err) {
@@ -37,10 +37,10 @@ const createItem = async (req, res) => {
 const readItem = async (req, res) => {
   try {
     const { id } = matchedData(req);
-    const data = await tracksModel.findById(id);
+    const data = await tracksModel.findOneData(id);
     res.send({ data });
   } catch (err) {
-    handleHttpError(res, "ERROR_GETING_ITEM");
+    handleHttpError(res, `ERROR_GETING_ITEM: ${err}`);
   }
 };
 

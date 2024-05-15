@@ -1,4 +1,4 @@
-const { tokenSign, verifyToken } = require("../utils/handleJwt");
+const { tokenSign } = require("../utils/handleJwt");
 const { encrypt, compare } = require("../utils/handlePassword");
 const { matchedData } = require("express-validator");
 const { handleHttpError } = require("../utils/handleError");
@@ -39,8 +39,7 @@ const loginCtrl = async (request, response) => {
   try {
     request = matchedData(request);
 
-    const user = await usersModel
-      .findOne({ email: request.email });
+    const user = await usersModel.findOne({ email: request.email });
 
     if (!user) {
       handleHttpError(response, `USER_NOT_EXIST`, 404);
