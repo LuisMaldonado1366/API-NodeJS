@@ -90,5 +90,13 @@ TracksScheme.statics.findOneData = function (id) {
   return joinData;
 };
 
+TracksScheme.statics.updateOne = async function (id, body) {
+  const updateData = await tracksModel.findOneAndUpdate(id, body, {
+      returnOriginal: false,
+    });
+
+  return updateData;
+};
+
 TracksScheme.plugin(mongooseDelete, { overrideMethods: "all" });
 module.exports = mongoose.model("tracks", TracksScheme);

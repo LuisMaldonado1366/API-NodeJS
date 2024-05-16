@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../../config/mysql");
-const  Storage  = require("./storage");
+const Storage = require("./storage");
 
 const Tracks = sequelize.define(
   "tracks",
@@ -36,8 +36,8 @@ const Tracks = sequelize.define(
   },
   {
     timestamps: true,
-    deletedAt: 'deleted',
-    paranoid: true
+    deletedAt: "deleted",
+    paranoid: true,
   }
 );
 
@@ -67,12 +67,19 @@ Tracks.findOneData = function (id) {
 };
 
 Tracks.delete = function (id) {
-
   const oneData = Tracks.destroy({
-    where: id
+    where: id,
   });
 
   return oneData;
+};
+
+Tracks.updateOne = async function (id, body) {
+  const oneData = await Tracks.findOne({ where: id });
+
+  const updateData = oneData.update(body);
+
+  return updateData;
 };
 
 module.exports = Tracks;

@@ -54,15 +54,11 @@ const updateItem = async (req, res) => {
   try {
     const { id, ...body } = matchedData(req);
 
-    // const idQuery = {
-    //   [propoertiesKey.id]: id,
-    // };
+    const idQuery = {
+      [propoertiesKey.id]: id,
+    };
 
-    // console.log(idQuery);
-
-    const data = await tracksModel.findOneAndUpdate({ _id: id }, body, {
-      returnOriginal: false,
-    });
+    const data = await tracksModel.updateOne(idQuery, body);
     res.send({ data });
   } catch (err) {
     handleHttpError(res, `ERROR_UPDATING_ITEM: ${err}`);
