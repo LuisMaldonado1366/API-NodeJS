@@ -1,10 +1,12 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const swaggerUI = require("swagger-ui-express");
 const morganBody = require("morgan-body");
 const dbConnectNoSQL = require("./config/mongo");
 const { dbConnectSQL } = require("./config/mysql");
 const loggerStream = require("./utils/handleLogs");
+const openApiConfiguration = require("./docs/swagger");
 const app = express();
 
 const ENGINE_DB = process.env.ENGINE_DB;
@@ -22,6 +24,11 @@ morganBody(app, {
 });
 
 const port = process.env.PORT || 3000;
+
+/**
+* Define documentation route.
+*/
+app.use('/documentation', swaggerUI.serve, swaggerUI.setup(openApiConfiguration));
 
 // Here goes the invokes to routes.
 //todo  localhosat/api/*
