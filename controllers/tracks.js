@@ -2,15 +2,16 @@ const { matchedData } = require("express-validator");
 const { tracksModel } = require("../models");
 const { handleHttpError } = require("../utils/handleError");
 
-const ENGINE_DB = process.env.ENGINE_DB;
+const getProperties = require("../utils/handlePropertiesEngine");
+const propoertiesKey = getProperties();
 
 const getItems = async (req, res) => {
   try {
     const data = await tracksModel.findAllData({});
-    const user = req.user;    
+    const user = req.user;
     res.send({ data, user });
   } catch (err) {
-    handleHttpError(res, "ERROR_GETTING_ITEMS");
+    handleHttpError(res, `ERROR_GETTING_ITEMS: ${err}`);
   }
 };
 
@@ -25,7 +26,7 @@ const createItem = async (req, res) => {
     const data = await tracksModel.create(body);
     res.send({ data });
   } catch (err) {
-    handleHttpError(res, "ERROR_CREATING_ITEM");
+    handleHttpError(res, `ERROR_CREATING_ITEM: ${err}`);
   }
 };
 
@@ -52,6 +53,13 @@ const readItem = async (req, res) => {
 const updateItem = async (req, res) => {
   try {
     const { id, ...body } = matchedData(req);
+
+    // const idQuery = {
+    //   [propoertiesKey.id]: id,
+    // };
+
+    // console.log(idQuery);
+
     const data = await tracksModel.findOneAndUpdate({ _id: id }, body, {
       returnOriginal: false,
     });
@@ -69,7 +77,11 @@ const updateItem = async (req, res) => {
 const deleteItem = async (req, res) => {
   try {
     const { id } = matchedData(req);
-    const data = await tracksModel.delete({ _id: id });
+    const idQuery = {
+      [propoertiesKey.id]: id,
+    };
+
+    const data = await tracksModel.delete(idQuery);
     res.send({ data });
   } catch (err) {
     handleHttpError(res, `ERROR_DELETING_ITEM: ${err}`);

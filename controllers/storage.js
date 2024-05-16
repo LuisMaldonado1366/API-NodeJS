@@ -1,7 +1,9 @@
-const fs = require("fs");
 const { storageModel } = require("../models");
 const { handleHttpError } = require("../utils/handleError");
 const { matchedData } = require("express-validator");
+
+const getProperties = require("../utils/handlePropertiesEngine");
+const propoertiesKey = getProperties();
 
 const PUBLIC_URL = process.env.PUBLIC_URL;
 const MEDIA_PATH = `${__dirname}/../storage`;
@@ -42,7 +44,7 @@ const createItem = async (req, res) => {
 const readItem = async (req, res) => {
   try {
     const { id } = matchedData(req);
-    const data = await storageModel.findById({ _id: id });
+    const data = await storageModel.findById(id);
     res.send({ data });
   } catch (err) {
     handleHttpError(res, `ERROR_READING_ITEM: ${err}`);
@@ -57,20 +59,22 @@ const readItem = async (req, res) => {
 const deleteItem = async (req, res) => {
   try {
     const { id } = matchedData(req);
-    const dataFile = await storageModel.findById({ _id: id });
+    const dataFile = await storageModel.findById(id);
     const { filename } = dataFile;
     const filePath = `${MEDIA_PATH}/${filename}`;
 
-    // // To delete from database and filesystem.
-    // await storageModel.deleteOne({_id: id});
-    // fs.unlinkSync(filePath);
-
     // To make soft-delete
-    await storageModel.delete({ _id: id });
+    // await storageModel.delete(id);
+
+    const idQuery = {
+      [propoertiesKey.id]: id,
+    };
+
+    const deleteResult = await storageModel.delete(idQuery);
 
     const data = {
       filePath,
-      deleted: 1,
+      deleted: deleteResult,
     };
 
     res.send({ data });

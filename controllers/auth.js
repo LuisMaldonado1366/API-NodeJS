@@ -51,6 +51,7 @@ const loginCtrl = async (request, response) => {
 
     if (!checkPassword) {
       handleHttpError(response, `INVALID_PASSWORD`, 401);
+      return;
     }
 
     user.set("password", undefined, { strict: false });

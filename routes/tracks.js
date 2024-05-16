@@ -18,7 +18,7 @@ const checkRole = require("../middleware/role");
 /**
  * Retrieves all items.
  */
-router.get("/", authMiddleware, getItems);
+router.get("/", authMiddleware, checkRole(["admin", "user"]), getItems);
 
 /**
  * Create an item.
@@ -34,7 +34,13 @@ router.post(
 /**
  * Read an item.
  */
-router.get("/:id", authMiddleware, validatorReadItem, readItem);
+router.get(
+  "/:id",
+  authMiddleware,
+  checkRole(["admin", "user"]),
+  validatorReadItem,
+  readItem
+);
 
 /**
  * Updates an item.
@@ -51,6 +57,12 @@ router.put(
 /**
  * Deletes an item.
  */
-router.delete("/:id", authMiddleware, checkRole(["admin"]), validatorReadItem, deleteItem);
+router.delete(
+  "/:id",
+  authMiddleware,
+  checkRole(["admin"]),
+  validatorReadItem,
+  deleteItem
+);
 
 module.exports = router;
