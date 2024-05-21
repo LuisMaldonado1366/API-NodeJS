@@ -24,6 +24,7 @@ const registerCtrl = async (request, response) => {
       user: dataUser,
     };
 
+    response.status(201);
     response.send({ data });
   } catch (err) {
     handleHttpError(response, `ERROR_REGISTER_USER: ${err}`);

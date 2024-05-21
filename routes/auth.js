@@ -33,7 +33,7 @@ router.post("/register", validatorRegister, registerCtrl);
  *           tags:
  *               - auth
  *           summary: "User login"
- *           description: "This route is used to by the user to login."
+ *           description: "This route is used by the user to login."
  *           requestBody:
  *               content:
  *                   application/json:
