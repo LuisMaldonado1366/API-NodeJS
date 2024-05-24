@@ -83,7 +83,7 @@ router.post(
  *    get:
  *      tags:
  *        - tracks
- *      summary: Track detailed data.
+ *      summary: Get the track's detailed data.
  *      description: Retrieves all data within a track object.
  *      security:
  *        - bearerAuth: []

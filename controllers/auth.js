@@ -61,6 +61,7 @@ const loginCtrl = async (request, response) => {
       user,
     };
 
+    response.status(201);
     response.send({ data });
   } catch (err) {
     handleHttpError(response, `ERROR_LOGIN_USER: ${err}`);

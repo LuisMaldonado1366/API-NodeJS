@@ -19,8 +19,8 @@ const checkRole = require("../middleware/role");
  *    get:
  *      tags:
  *        - storage
- *      summary: Get all items.
- *      description: Retrieve all the stored items.
+ *      summary: Get all the media data stored.
+ *      description: Retrieve all the non-deleted stored items.
  *      security:
  *        - bearerAuth: []
  *      responses:
@@ -45,29 +45,29 @@ router.get("/", authMiddleware, checkRole(["admin", "user"]), getItems);
  *    post:
  *      tags:
  *        - storage
- *      summary: "Upload file"
- *      description: Subir un archivo
+ *      summary: Upload a file
+ *      description: Upload a media file.
  *      security:
  *        - bearerAuth: []
  *      responses:
  *        '200':
- *          description: Retorna el objeto insertado en la coleccion.
+ *          description: Returns the inserted object data.
  *        '422':
- *          description: Error de validacion.
+ *          description: Validation error.
  *      requestBody:
  *        content:
  *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
- *               myfile:
+ *               uploadFile:
  *                 type: string
  *                 format: binary
  *    responses:
  *      '201':
- *        description: Retorna el objeto insertado en la coleccion con stado '201'
+ *        description: Returns the inserted object data with code '201'
  *      '403':
- *        description: No tiene permisos '403'
+ *        description: Forbidden Access '403'
  */
 router.post(
   "/",
@@ -84,26 +84,26 @@ router.post(
  *    get:
  *      tags:
  *        - storage
- *      summary: "Detalle storage"
- *      description: Obten el detalle de una storage
+ *      summary: Get all the stored item data.
+ *      description: Retrieves all the data related to the given id.
  *      security:
  *        - bearerAuth: []
  *      parameters:
  *      - name: id
  *        in: path
- *        description: ID de storage a retornar
+ *        description: Stored media Id
  *        required: true
  *        schema:
  *          type: string
  *      responses:
  *        '200':
- *          description: Retorna el objecto de la storage.
+ *          description: Returns the object data.
  *          content:
  *             application/json:
  *               schema:
  *                   $ref: '#/components/schemas/storage'
  *        '422':
- *          description: Error de validacion.
+ *          description: Validation error.
  */
 router.get(
   "/:id",
@@ -120,22 +120,22 @@ router.get(
  *    delete:
  *      tags:
  *        - storage
- *      summary: "Eliminar storage"
- *      description: Elimiar el detalle de una storage
+ *      summary: Delete stored item.
+ *      description: Deletes the stored data of the diven item id.
  *      security:
  *        - bearerAuth: []
  *      parameters:
  *      - name: id
  *        in: path
- *        description: ID de canción a retornar
+ *        description: Media Id to be deleted.
  *        required: true
  *        schema:
  *          type: string
  *      responses:
  *        '200':
- *          description: Retorna el objecto de la storage.
+ *          description: Returns the media data.
  *        '422':
- *          description: Error de validacion.
+ *          description: Validation error.
  */
 router.delete(
   "/:id",
