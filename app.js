@@ -10,6 +10,8 @@ const openApiConfiguration = require("./docs/swagger");
 const app = express();
 
 const ENGINE_DB = process.env.ENGINE_DB;
+const port = process.env.PORT || 3000;
+const NODE_ENV = process.env.NODE_ENV || "development";
 
 app.use(cors());
 app.use(express.json());
@@ -23,19 +25,25 @@ morganBody(app, {
   },
 });
 
-const port = process.env.PORT || 3000;
-
 /**
-* Define documentation route.
-*/
-app.use('/documentation', swaggerUI.serve, swaggerUI.setup(openApiConfiguration));
+ * Define documentation route.
+ */
+app.use(
+  "/documentation",
+  swaggerUI.serve,
+  swaggerUI.setup(openApiConfiguration)
+);
 
 // Here goes the invokes to routes.
 //todo  localhosat/api/*
 app.use("/api", require("./routes"));
 
-app.listen(port, () => {
-  console.log(`Your app is up and running on: http://localhost:${port}`);
-});
+if (NODE_ENV !== "test") {
+  app.listen(port, () => {
+    console.log(`Your app is up and running on: http://localhost:${port}`);
+  });
+}
 
-(ENGINE_DB === "nosql") ? dbConnectNoSQL() :  dbConnectSQL();
+ENGINE_DB === "nosql" ? dbConnectNoSQL() : dbConnectSQL();
+
+module.exports = app;

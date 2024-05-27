@@ -42,8 +42,10 @@ router.post("/register", validatorRegister, registerCtrl);
  *           responses: 
  *               "201":
  *                   description: "User correctly logged in."
- *               "403":
+ *               "401":
  *                   description: "Error by user data validation."
+ *               "404":
+ *                   description: "User does not exist."
  */
 router.post("/login", validatorLogin, loginCtrl);
 
